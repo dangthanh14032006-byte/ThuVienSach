@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("READER") // READER, ADMIN, MODERATOR
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  histories ReadingHistory[]
+  bookmarks Bookmark[]
+  comments  Comment[]
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  icon        String?  // lucide icon name or emoji
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  books Book[]
+}
+
+model Author {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  bio       String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  books Book[]
+}
+
+model Book {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String?
+  coverImage  String?
+  publisher   String?
+  publishYear Int?
+  pageCount   Int?
+  status      String   @default("PUBLISHED") // PUBLISHED, DRAFT, HIDDEN
+  isFeatured  Boolean  @default(false)
+  viewCount   Int      @default(0)
+  downloadCount Int    @default(0)
+  ratingAvg   Float    @default(5.0)
+  ratingCount Int      @default(1)
+  
+  authorId    String
+  author      Author   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  files       BookFile[]
+  histories   ReadingHistory[]
+  bookmarks   Bookmark[]
+  comments    Comment[]
+}
+
+model BookFile {
+  id            String   @id @default(uuid())
+  bookId        String
+  book          Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  format        String   // PDF, EPUB, MOBI, AUDIO
+  fileUrl       String
+  fileSize      Int?     // bytes
+  downloadCount Int      @default(0)
+  createdAt     DateTime @default(now())
+}
+
+model ReadingHistory {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookId          String
+  book            Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  lastPage        Int      @default(1)
+  progressPercent Float    @default(0.0)
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, bookId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, bookId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+}
