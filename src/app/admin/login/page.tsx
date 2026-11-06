@@ -8,30 +8,16 @@ import {
   Mail,
   ArrowLeft,
   AlertCircle,
-  KeyRound,
   Eye,
   EyeOff,
-  UserCheck,
 } from "lucide-react";
 
 export default function AdminLoginPage() {
-  const [email, setEmail] = useState("admin@thuviensach.vn");
-  const [password, setPassword] = useState("admin123_change_me");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fillDemoAccount = () => {
-    setEmail("admin@thuviensach.vn");
-    setPassword("admin123_change_me");
-    setError(null);
-  };
-
-  const fillPersonalAccount = () => {
-    setEmail("dangthanh14032006@gmail.com");
-    setPassword("");
-    setError(null);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,7 +106,7 @@ export default function AdminLoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu..."
+                  placeholder="Nhập mật khẩu quản trị..."
                   className="w-full pl-10 pr-10 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none font-mono"
                 />
                 <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
@@ -143,39 +129,6 @@ export default function AdminLoginPage() {
               {isLoading ? "Đang xác thực..." : "Đăng Nhập Quản Trị"}
             </button>
           </form>
-
-          {/* Quick Demo Credentials Info & 1-Click Buttons */}
-          <div className="pt-4 border-t border-slate-800 space-y-3">
-            <span className="text-[11px] font-bold text-slate-400 block">
-              Tùy chọn đăng nhập nhanh:
-            </span>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-              <button
-                type="button"
-                onClick={fillDemoAccount}
-                className="p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-700 text-left transition"
-              >
-                <div className="flex items-center gap-1.5 font-bold text-emerald-400 mb-0.5">
-                  <KeyRound className="w-3.5 h-3.5" />
-                  <span>Tài khoản Demo</span>
-                </div>
-                <div className="text-slate-400 text-[10px] truncate">admin@thuviensach.vn</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={fillPersonalAccount}
-                className="p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-700 text-left transition"
-              >
-                <div className="flex items-center gap-1.5 font-bold text-teal-400 mb-0.5">
-                  <UserCheck className="w-3.5 h-3.5" />
-                  <span>Tài khoản Cá nhân</span>
-                </div>
-                <div className="text-slate-400 text-[10px] truncate">dangthanh14032006...</div>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
