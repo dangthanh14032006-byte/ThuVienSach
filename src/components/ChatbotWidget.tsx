@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   MessageSquare,
   X,
@@ -38,6 +39,7 @@ const SUGGESTIONS = [
 ];
 
 export default function ChatbotWidget() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState("");
@@ -53,6 +55,11 @@ export default function ChatbotWidget() {
       scrollToBottom();
     }
   }, [messages, isOpen]);
+
+  // Hide on admin portal
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = (textToSend || inputValue).trim();
